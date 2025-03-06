@@ -61,3 +61,21 @@ misinfo_d %>%
   ) +
   geom_histogram(binwidth = 1)
 ```
+# Gender vs beliefs
+```{r gender-vs-beliefs-table}
+misinfo_d %>%
+  group_by(gender) %>%
+  summarise(n = n(), M = mean(beliefs), Mdn = median(beliefs), SD = sd(beliefs))
+```
+
+```{r gender-vs-beliefs-test}
+misinfo_d %>%
+  filter(gender != 'In another way') %>%
+  t.test(
+    beliefs ~ gender,
+    data = .
+  )
+```
+
+In the sample, men had more misinformation beliefs (M = 0.73, SD = 1.13) than women (M = 0.61, SD = 1.05), but this was not statistically significant, t(494.31) = -1.20, p = 0.230.
+
