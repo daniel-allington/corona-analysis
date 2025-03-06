@@ -1,0 +1,63 @@
+---
+title: "Misinformation Beliefs"
+author: "Daniel Allington"
+date: "2025-03-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(dplyr)
+library(readr)
+library(ggplot2)
+
+misinfo_d <- read_csv('../data/life-under-lockdown-wave2-extract.csv')
+
+knowledge_levels <- c(
+  'Nothing at all',
+  'Not very much',
+  'A fair amount',
+  'A great deal'
+)
+
+misinfo_d <- misinfo_d %>%
+  mutate(
+    know_facebook = know_facebook %>%
+      ordered(
+        levels = knowledge_levels
+      )
+  )
+```
+
+```{r visualise-age}
+misinfo_d %>%
+  ggplot(
+    aes(x = age)
+  ) +
+  geom_histogram(binwidth = 5)
+```
+
+```{r visualise-gender}
+misinfo_d %>%
+  ggplot(
+    aes(x = gender)
+  ) +
+  geom_bar()
+```
+
+```{r visualise-facebook}
+misinfo_d %>%
+  ggplot(
+    aes(x = know_facebook)
+  ) +
+  geom_bar()
+```
+
+```{r}
+misinfo_d %>%
+  ggplot(
+    aes(x = beliefs)
+  ) +
+  geom_histogram(binwidth = 1)
+```
