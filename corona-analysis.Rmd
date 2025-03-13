@@ -2,7 +2,9 @@
 title: "Misinformation Beliefs"
 author: "Daniel Allington"
 date: "2025-03-06"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -11,6 +13,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(readr)
 library(ggplot2)
+
+options(scipen = 999)
 
 misinfo_d <- read_csv('../data/life-under-lockdown-wave2-extract.csv')
 
@@ -30,6 +34,7 @@ misinfo_d <- misinfo_d %>%
   )
 ```
 
+# Descriptive statistics
 ```{r visualise-age}
 misinfo_d %>%
   ggplot(
@@ -61,7 +66,16 @@ misinfo_d %>%
   ) +
   geom_histogram(binwidth = 1)
 ```
-# Gender vs beliefs
+
+# Hypotheses
+H1 Men and women will have different mean numbers of misinformation beliefs
+
+H2 Age will be associated with number of misinformation beliefs
+
+H3 Amount of knowledge gained from Facebook will be associated with number of misinformation beliefs
+
+# Findings
+## Gender vs beliefs
 ```{r gender-vs-beliefs-table}
 misinfo_d %>%
   group_by(gender) %>%
@@ -79,3 +93,44 @@ misinfo_d %>%
 
 In the sample, men had more misinformation beliefs (M = 0.73, SD = 1.13) than women (M = 0.61, SD = 1.05), but this was not statistically significant, t(494.31) = -1.20, p = 0.230.
 
+## Age vs beliefs
+```{r visualise-age-vs-beliefs}
+misinfo_d %>%
+  ggplot(aes(x = age, y = beliefs)) +
+  geom_jitter()
+```
+
+```{r age-vs-beliefs-correlation}
+misinfo_d %>%
+  cor.test(
+    ~ age + beliefs,
+    data = .,
+    method = 'pearson'
+  )
+```
+
+In the sample, there is a moderate, statistically significant correlation between age and number of misinformation beliefs, r(498) = -.24, 95% CI [-.32, -.16], p < .001.
+
+## Knowledge from Facebook vs beliefs
+```{r}
+misinfo_d %>%
+  ggplot(
+    aes(x = know_facebook, y = beliefs)
+  ) +
+  geom_boxplot()
+```
+
+```{r}
+misinfo_d %>%
+  mutate(
+    know_facebook = as.numeric(know_facebook)
+  ) %>%
+cor.test(
+    ~ know_facebook + beliefs,
+    data = .,
+    method = 'spearman',
+    exact = FALSE
+  )
+```
+
+In the sample, there is a moderate, statistically significant correlation between knowledge gained from Facebook and number of misinformation beliefs, rs(498) = .23, p < .001.
