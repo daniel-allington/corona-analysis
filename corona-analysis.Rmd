@@ -134,3 +134,52 @@ cor.test(
 ```
 
 In the sample, there is a moderate, statistically significant correlation between knowledge gained from Facebook and number of misinformation beliefs, rs(498) = .23, p < .001.
+
+## Linear model
+```{r prepare-data-for-models}
+model_d <- misinfo_d %>%
+  mutate(
+    Female = as.numeric(gender == 'Female'),
+    High_Facebook = as.numeric(know_facebook %in% c('A fair amount', 'A great deal'))
+  )
+```
+
+```{r age-model}
+model_d %>%
+  lm(
+    beliefs ~ age,
+    data = .
+  ) %>%
+  summary
+```
+
+```{r gender-model}
+model_d %>%
+  lm(
+    beliefs ~ Female,
+    data = .
+  ) %>%
+  summary
+```
+
+```{r facebook-model}
+model_d %>%
+  lm(
+    beliefs ~ High_Facebook,
+    data = .
+  ) %>%
+  summary
+```
+
+```{r full-model}
+full_model <- model_d %>%
+  lm(
+    beliefs ~ age + High_Facebook + Female,
+    data = .
+  )
+
+full_model %>%
+  summary
+```
+
+
